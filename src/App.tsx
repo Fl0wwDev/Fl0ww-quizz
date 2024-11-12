@@ -1,15 +1,18 @@
-import Footer from "./components/footer";
+import Home from "./pages/Home";
 import Modes from "./pages/modes";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import "./App.css";
 
 function App() {
    return (
       <div className="App">
-         <div className="content">
-            <h1>Quizz</h1>
-            <div className="button"><button onClick={<Modes}>Jouer</button></div>
-         </div>
-         <Footer />
+         <Router>
+            <Routes>
+               <Route path="/" element={<Home />} />
+               <Route path="/home" element={<Home />} />
+               <Route path="/modes" element={<Modes />} />
+            </Routes>
+         </Router>
       </div>
    );
 }

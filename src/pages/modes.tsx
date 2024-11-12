@@ -1,8 +1,13 @@
+import Footer from "../components/footer";
+
 function Modes() {
    return (
-        <div>
-             <h1>Modes</h1>
-        </div>
+      <div className="App">
+         <div className="content">
+         <h1>Modes</h1>
+         </div>
+         <Footer />
+      </div>
    );
 }
 
