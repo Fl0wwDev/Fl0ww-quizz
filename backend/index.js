@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const connection = require('./db');
+const connection = require('./db'); // Assurez-vous que la configuration de connexion à MySQL est dans db.js
 
 app.use(express.json());
 
@@ -47,14 +47,23 @@ app.post('/themes', (req, res) => {
   });
 });
 
-// Route pour créer une nouvelle question
+// Route pour créer une nouvelle question et associer un thème
 app.post('/questions', (req, res) => {
   const { theme_id, question, answer } = req.body;
-  connection.query('INSERT INTO questions (theme_id, question, answer) VALUES (?, ?, ?)', [theme_id, question, answer], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+
+  // Vérification si le theme_id existe
+  connection.query('SELECT * FROM themes WHERE id = ?', [theme_id], (err, themes) => {
+    if (err || themes.length === 0) {
+      return res.status(400).json({ error: "Invalid theme_id" });
     }
-    res.status(201).json({ id: results.insertId, theme_id, question, answer });
+
+    // Insérer la question une fois que le thème est validé
+    connection.query('INSERT INTO questions (theme_id, question, answer) VALUES (?, ?, ?)', [theme_id, question, answer], (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({ id: results.insertId, theme_id, question, answer });
+    });
   });
 });
 
@@ -81,4 +90,5 @@ app.delete('/questions/:id', (req, res) => {
   });
 });
 
+// Lancer le serveur sur le port 3000
 app.listen(3000, () => console.log('Server running on port 3000'));
